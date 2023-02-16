@@ -56,7 +56,11 @@ public class ApplicationConfiguration {
     CommandLineRunner run(AuthService authService, ProductService productService) {
         return args -> {
             authService.register(
-                    new RegisterRequest("Fazri", "fazri", "fazri")
+              RegisterRequest.builder()
+                      .name("Fazri Ridwan")
+                      .username("fazri")
+                      .password("fazri")
+                      .build()
             );
             productService.createProduct(
                     new ProductRequest("Product 1", 200000.0, 2, "category1")

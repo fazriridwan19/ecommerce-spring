@@ -1,13 +1,14 @@
 package com.lazyorchest.e_commerce.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -15,18 +16,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "products")
-public class Product {
+@Table(name = "carts")
+public class Cart {
     @Id
     @GeneratedValue
     private Long id;
-    @Column(length = 100)
-    private String name;
-    private Double price;
-    private Integer stock;
-    @Column(length = 50)
-    private String category;
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
-    private List<CartDetail> cartDetailLis;
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "cart")
+    private List<CartDetail> cartDetails;
 }
