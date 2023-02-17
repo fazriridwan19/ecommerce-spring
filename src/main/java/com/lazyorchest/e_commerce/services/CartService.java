@@ -30,26 +30,66 @@ public class CartService {
                 .build();
         cartRepo.save(cart);
     }
-    public Cart findByCurrentUser(User user) {
-        return cartRepo.findOne(Example.of(Cart.builder().user(user).build())).orElseThrow();
-    }
-    public CartDetail addCartDetail(Cart cart, CartDetailRequest request) {
-        // TODO Bagaimana cara agar saat produk yg sama diinput akan menambah quantity ? (Optional)
-        // TODO Jika bisa sih tambah property total amount utk setiap cartDetail (Optional)
-
+    public CartDetail addProductToCart(Long productId, Cart cart, CartDetailRequest request) {
         var cartDetail = CartDetail.builder()
                 .cart(cart)
-                .product(productRepo.findById(request.getProductId()).orElseThrow())
-                .quantity(request.getQuantity())
+                .product(productRepo.findById(productId).orElseThrow())
                 .build();
+
+        var cartDetailDb = cartDetailRepo.findOne(
+                Example.of(cartDetail)
+        ).orElse(cartDetail);
+
+        if (!cartDetailDb.equals(cartDetail)) {
+            cartDetailDb.setQuantity(cartDetailDb.getQuantity() + request.getQuantity());
+            cartDetailRepo.save(cartDetailDb);
+            return  cartDetailDb;
+        }
+
+        cartDetail.setQuantity(request.getQuantity());
         cartDetailRepo.save(cartDetail);
         return cartDetail;
     }
-
     public List<Cart> readAllCart() {
         return cartRepo.findAll();
     }
-
-    // TODO Delete product list dalam cart
+    public Cart findByCurrentUser(User user) {
+        return cartRepo.findOne(Example.of(Cart.builder().user(user).build()))
+                .orElseThrow();
+    }
+    public CartDetail findCartDetailById(Cart cart, Long id) {
+        return cartDetailRepo.findOne(
+                Example.of(
+                        CartDetail.builder()
+                                .id(id)
+                                .cart(cart)
+                                .build()
+                )
+        ).orElseThrow();
+    }
+    public CartDetail updateQuantityCartDetail(Cart cart, Long id, CartDetailRequest request) {
+        CartDetail cartDetail = cartDetailRepo.findOne(
+                Example.of(
+                        CartDetail.builder()
+                                .id(id)
+                                .cart(cart)
+                                .build()
+                )
+        ).orElseThrow();
+        cartDetail.setQuantity(request.getQuantity());
+        cartDetailRepo.save(cartDetail);
+        return cartDetail;
+    }
+    public void deleteCartDetailFromCart(Cart cart, Long id) {
+        CartDetail cartDetail = cartDetailRepo.findOne(
+                Example.of(
+                        CartDetail.builder()
+                                .id(id)
+                                .cart(cart)
+                                .build()
+                )
+        ).orElseThrow();
+        cartDetailRepo.delete(cartDetail);
+    }
     // TODO Fitur checkout dan payment
 }
