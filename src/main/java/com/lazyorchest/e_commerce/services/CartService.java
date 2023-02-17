@@ -3,11 +3,9 @@ package com.lazyorchest.e_commerce.services;
 import com.lazyorchest.e_commerce.dto.CartDetailRequest;
 import com.lazyorchest.e_commerce.models.Cart;
 import com.lazyorchest.e_commerce.models.CartDetail;
+import com.lazyorchest.e_commerce.models.Transaction;
 import com.lazyorchest.e_commerce.models.User;
-import com.lazyorchest.e_commerce.repositories.CartDetailRepo;
-import com.lazyorchest.e_commerce.repositories.CartRepo;
-import com.lazyorchest.e_commerce.repositories.ProductRepo;
-import com.lazyorchest.e_commerce.repositories.UserRepo;
+import com.lazyorchest.e_commerce.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -20,8 +18,8 @@ import java.util.List;
 public class CartService {
     private final CartRepo cartRepo;
     private final ProductRepo productRepo;
-    private final UserRepo userRepo;
     private final CartDetailRepo cartDetailRepo;
+    private final TransactionRepo transactionRepo;
     public void createCart(User user) {
         var cart = Cart.builder()
                 .user(user)
@@ -31,31 +29,51 @@ public class CartService {
         cartRepo.save(cart);
     }
     public CartDetail addProductToCart(Long productId, Cart cart, CartDetailRequest request) {
-        var cartDetail = CartDetail.builder()
+        CartDetail cartDetail = CartDetail.builder()
                 .cart(cart)
                 .product(productRepo.findById(productId).orElseThrow())
+                .quantity(request.getQuantity())
                 .build();
-
-        var cartDetailDb = cartDetailRepo.findOne(
-                Example.of(cartDetail)
-        ).orElse(cartDetail);
-
-        if (!cartDetailDb.equals(cartDetail)) {
-            cartDetailDb.setQuantity(cartDetailDb.getQuantity() + request.getQuantity());
-            cartDetailRepo.save(cartDetailDb);
-            return  cartDetailDb;
-        }
-
-        cartDetail.setQuantity(request.getQuantity());
         cartDetailRepo.save(cartDetail);
+
+        transactionRepo.save(
+                Transaction.builder()
+                        .cartDetail(cartDetail)
+                        .isSuccess(false)
+                        .totalAmount(cartDetail.getQuantity() * cartDetail.getProduct().getPrice())
+                        .createdAt(LocalDateTime.now())
+                        .build()
+        );
+//        var cartDetailDb = cartDetailRepo.findOne(
+//                Example.of(cartDetail)
+//        ).orElse(cartDetail);
+//
+//        if (!cartDetailDb.equals(cartDetail)) {
+//            cartDetailDb.setQuantity(cartDetailDb.getQuantity() + request.getQuantity());
+//            cartDetailRepo.save(cartDetailDb);
+//            return  cartDetailDb;
+//        }
+//
+//        cartDetail.setQuantity(request.getQuantity());
+
         return cartDetail;
     }
     public List<Cart> readAllCart() {
         return cartRepo.findAll();
     }
     public Cart findByCurrentUser(User user) {
-        return cartRepo.findOne(Example.of(Cart.builder().user(user).build()))
+        return cartRepo
+                .findOne(
+                        Example.of(Cart.builder().user(user).build())
+                )
                 .orElseThrow();
+    }
+    public List<CartDetail> findAllCartDetailByCurrentUser(User user) {
+        Cart cart = Cart.builder().user(user).build();
+        Transaction transaction = Transaction.builder().isSuccess(false).build();
+        CartDetail cartDetail = CartDetail.builder().cart(cart).transaction(transaction).build();
+
+        return cartDetailRepo.findAll(Example.of(cartDetail));
     }
     public CartDetail findCartDetailById(Cart cart, Long id) {
         return cartDetailRepo.findOne(
@@ -91,5 +109,4 @@ public class CartService {
         ).orElseThrow();
         cartDetailRepo.delete(cartDetail);
     }
-    // TODO Fitur checkout dan payment
 }

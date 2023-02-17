@@ -29,4 +29,7 @@ public class CartDetail {
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
     private Integer quantity;
+    @JsonIgnore
+    @OneToOne(mappedBy = "cartDetail")
+    private Transaction transaction;
 }

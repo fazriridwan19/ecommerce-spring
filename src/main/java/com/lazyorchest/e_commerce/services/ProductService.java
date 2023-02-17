@@ -24,7 +24,7 @@ public class ProductService {
     }
 
     public List<Product> readAllProduct() {
-        // TODO Filter produk berdasarkan category
+        //TODO Filter produk berdasarkan category
         return productRepo.findAll();
     }
 

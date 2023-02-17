@@ -5,6 +5,7 @@ import com.lazyorchest.e_commerce.models.Cart;
 import com.lazyorchest.e_commerce.models.CartDetail;
 import com.lazyorchest.e_commerce.models.User;
 import com.lazyorchest.e_commerce.services.CartService;
+import com.lazyorchest.e_commerce.services.TransactionService;
 import com.lazyorchest.e_commerce.services.UserService;
 import com.lazyorchest.e_commerce.utils.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,13 +27,15 @@ public class CartResource {
     private final CartService cartService;
     private final JwtService jwtService;
     private final UserService userService;
+    private final TransactionService transactionService;
     @PostMapping("/add/product/{productId}")
     public ResponseEntity<CartDetail> addProductToCart(HttpServletRequest request, @PathVariable Long productId, @RequestBody CartDetailRequest cartDetailRequest) {
         final String token = request.getHeader("Authorization").substring(7);
         final String username = jwtService.extractUsername(token);
         User user = userService.getUserByUsername(username);
         Cart cart = cartService.findByCurrentUser(user);
-        return ResponseEntity.ok(cartService.addProductToCart(productId, cart, cartDetailRequest));
+        CartDetail cartDetail = cartService.addProductToCart(productId, cart, cartDetailRequest);
+        return ResponseEntity.ok(cartDetail);
     }
     @GetMapping
     public ResponseEntity<Cart> readAllCartByCurrentUser(HttpServletRequest request) {
@@ -40,6 +43,13 @@ public class CartResource {
         final String username = jwtService.extractUsername(token);
         User user = userService.getUserByUsername(username);
         return ResponseEntity.ok(cartService.findByCurrentUser(user));
+    }
+    @GetMapping("/detail")
+    public ResponseEntity<List<CartDetail>> readAllCartDetailByCurrentUser(HttpServletRequest request) {
+        final String token = request.getHeader("Authorization").substring(7);
+        final String username = jwtService.extractUsername(token);
+        User user = userService.getUserByUsername(username);
+        return ResponseEntity.ok(cartService.findAllCartDetailByCurrentUser(user));
     }
     @GetMapping("/detail/{id}")
     public ResponseEntity<CartDetail> readCurrentUserCartDetailById(HttpServletRequest request, @PathVariable Long id) {
