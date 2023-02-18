@@ -4,13 +4,13 @@ import com.lazyorchest.e_commerce.dto.ProductRequest;
 import com.lazyorchest.e_commerce.models.Product;
 import com.lazyorchest.e_commerce.services.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -22,8 +22,9 @@ public class ProductResource {
         return ResponseEntity.ok(productService.createProduct(request));
     }
     @GetMapping
-    public ResponseEntity<List<Product>> readProducts() {
-        return ResponseEntity.ok(productService.readAllProduct());
+    public ResponseEntity<List<Product>> readProducts(@RequestParam(name = "category") Optional<String> category) {
+
+        return ResponseEntity.ok(productService.readAllProduct(category.orElse("ALL")));
     }
     @GetMapping("/{id}")
     public ResponseEntity<Product> readProduct(@PathVariable Long id) {

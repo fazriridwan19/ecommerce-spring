@@ -96,6 +96,9 @@ public class CartService {
         ).orElseThrow();
         cartDetail.setQuantity(request.getQuantity());
         cartDetailRepo.save(cartDetail);
+        Transaction transaction = transactionRepo.findById(cartDetail.getTransaction().getId()).orElseThrow();
+        transaction.setTotalAmount(cartDetail.getQuantity() * cartDetail.getProduct().getPrice());
+        transactionRepo.save(transaction);
         return cartDetail;
     }
     public void deleteCartDetailFromCart(Cart cart, Long id) {
