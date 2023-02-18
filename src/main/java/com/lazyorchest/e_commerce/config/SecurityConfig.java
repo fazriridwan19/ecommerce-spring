@@ -26,6 +26,8 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/v3/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasAuthority("ADMIN")
