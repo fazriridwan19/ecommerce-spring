@@ -27,13 +27,13 @@ To get started with this project, you will need to have the following installed 
 * PostgreSQL (or you can use Docker to containerizing the image)
 
 
-To build and run the project, follow these steps:
+To build and run the project, you can simply open this project in your favorite IDE and run it, or follow these steps if you building and running this project using text editor :
 
 * Clone the repository: `git clone https://github.com/fazriridwan19/ecommerce-spring.git`
 * If you have different configuration of PostgreSQL you can update `application.yml` at `src/main/resources/`
 * Navigate to the project directory: cd spring-boot-security-jwt
-* Build the project: mvn clean install
-* Run the project: mvn spring-boot:run
+* Build the project: `mvn clean install`
+* Run the project: `mvn spring-boot:run`
 
 > The application will be available at http://localhost:8080.
 

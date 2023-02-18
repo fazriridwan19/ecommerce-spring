@@ -1,0 +1,28 @@
+version: "3"
+services:
+  spring-ecommerce:
+    container_name: spring-app
+    image: spring-ecommerce
+    depends_on:
+      - postgresdb
+    build: .
+    ports:
+      - "9090:8080"
+    environment:
+      POSTGRES_HOST: postgresdb
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGREST_PASSWORD: root
+  postgresdb:
+    container_name: postgresdb
+    image: postgres
+    volumes:
+      -  psqldb:/var/lib/postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: ecommerce
+volumes:
+  psqldb:
