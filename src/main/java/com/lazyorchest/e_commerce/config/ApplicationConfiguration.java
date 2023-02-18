@@ -2,6 +2,7 @@ package com.lazyorchest.e_commerce.config;
 
 import com.lazyorchest.e_commerce.dto.ProductRequest;
 import com.lazyorchest.e_commerce.dto.RegisterRequest;
+import com.lazyorchest.e_commerce.models.Role;
 import com.lazyorchest.e_commerce.repositories.UserRepo;
 import com.lazyorchest.e_commerce.services.AuthService;
 import com.lazyorchest.e_commerce.services.ProductService;
@@ -60,6 +61,7 @@ public class ApplicationConfiguration {
                       .name("Fazri Ridwan")
                       .username("fazri")
                       .password("fazri")
+                      .role(Role.ADMIN)
                       .build()
             );
             productService.createProduct(
