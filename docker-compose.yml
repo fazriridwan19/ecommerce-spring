@@ -2,7 +2,7 @@ version: "3"
 services:
   spring-ecommerce:
     container_name: spring-app
-    image: spring-ecommerce
+    image: fazriridwan/spring-ecommerce
     depends_on:
       - postgresdb
     build: .

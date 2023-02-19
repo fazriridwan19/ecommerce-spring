@@ -18,6 +18,7 @@ This project is the implementation of RESTFull API using Spring Boot 3.0 and JSO
 * JSON Web Tokens (JWT)
 * PostgreSQL (Store as Docker Image)
 * Maven
+* Docker
 
 ## Getting Started
 To get started with this project, you will need to have the following installed on your local machine:
@@ -35,6 +36,17 @@ To build and run the project, you can simply open this project in your favorite 
 * Build the project: `mvn clean install`
 * Run the project: `mvn spring-boot:run`
 
+To run this project using docker, you can follow these steps :
+* pull the image `docker pull fazriridwan/spring-ecommerce`
+* create `docker-compose.yml` file, you can use `docker-compose.yml` file that available in this repo
+* go to terminal, set current directory based on your `docker-compose.yml` file directory
+* run this command : `docker-compose up`
+
+ 
 > The application will be available at http://localhost:8080.
 
+> If running on docker , the application will be available at http://localhost:9090.
+
 > The ERD is available at https://drive.google.com/file/d/1WmUAZUdTR72OcZj7tjB_U-GUdnudxcTK/view?usp=sharing
+
+> API documentation available at https://app.swaggerhub.com/apis/fazriridwan19/e-commerce_api/1.0.0
