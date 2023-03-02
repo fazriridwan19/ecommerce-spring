@@ -32,7 +32,7 @@ To build and run the project, you can simply open this project in your favorite 
 
 * Clone the repository: `git clone https://github.com/fazriridwan19/ecommerce-spring.git`
 * If you have different configuration of PostgreSQL you can update `application.yml` at `src/main/resources/`
-* Navigate to the project directory: cd spring-boot-security-jwt
+* Navigate to the project directory: `cd ecommerce-spring`
 * Build the project: `mvn clean install`
 * Run the project: `mvn spring-boot:run`
 
